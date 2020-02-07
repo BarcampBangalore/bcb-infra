@@ -1,0 +1,8 @@
+- name: Add reqd config files
+  copy:
+    src: '{{item.src}}'
+    dest: '/etc/nginx/sites-enabled/{{item.dest}}'
+  loop:
+    - { src: app.conf, dest: app.conf}
+    - { src: bcb.conf, dest: bcb.conf}
+    - { src: campaigns.conf, dest: campaigns.conf}

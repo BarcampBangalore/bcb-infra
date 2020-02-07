@@ -1,0 +1,59 @@
+- name: Add universe repo
+  apt_repository:
+    repo: "{{ item }}"
+  loop:
+    - "deb http://archive.ubuntu.com/ubuntu/ bionic universe"
+    - "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe"
+    - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
+
+- name: Install custom PPA for certbot 
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
+
+- name: Update apt sources
+  apt:
+    update_cache: yes
+
+- name: Install reqd software
+  apt: 
+    pkg:
+    - software-properties-common
+    - vim 
+    - tmux 
+    - git 
+    - nginx 
+    - php-fpm
+    - mysql-server
+    - certbot
+    - python-certbot-nginx
+    - python3-certbot-dns-cloudflare
+
+- name: Create the node exporter directory
+  file:
+    path: ~/node_exporter
+    state: directory
+
+- name: Download node exporter
+  shell: curl -L https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz -o ~/node_exporter.tar.gz
+  args:
+    chdir: ~/
+
+- name: Extract node exporter archive
+  shell: tar xf ~/node_exporter.tar.gz --strip-components 1
+  args:
+    chdir:
+      ~/node_exporter
+
+- name: Make node exporter executible 
+  file:
+    path: ~/node_exporter/node_exporter
+    mode: u+x
+
+- name: Delete node exporter archiver
+  file:
+    path: ~/node_exporter.tar.gz
+    state: absent
+
+
+- name: Run node exporter
+  shell: nohup ~/node_exporter/node_exporter & 

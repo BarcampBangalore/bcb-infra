@@ -9,13 +9,13 @@ provider "digitalocean" {
 }
 
 resource "digitalocean_ssh_key" "bcbdo" {
-  name       = "Terraform Example"
+  name       = "bcb-2020"
   public_key = file("/home/sathyabhat/.ssh/id_rsa_do.pub")
 }
 
 
 resource "digitalocean_droplet" "bcbdo" {
-  image    = "ubuntu-19-10-x64"
+  image    = "ubuntu-18-04-x64"
   name     = "bcb-general"
   region   = "blr1"
   size     = "s-1vcpu-1gb"

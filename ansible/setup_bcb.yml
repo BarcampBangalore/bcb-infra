@@ -1,0 +1,11 @@
+---
+- name: Setup BCB Droplet
+  hosts:
+    - all
+  tasks:
+  - name: Install required packages
+    import_role:
+        name: install
+  - name: Setup the config files
+    import_role:
+        name: config
