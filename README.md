@@ -14,10 +14,10 @@ Among other things, Ansible
 
 ### To do
 
-[] Install WordPress
-[] Setup custom BCB Theme
-[] Install custom plugins
-[] Install other miscellanious tools used (such as [Mailtrain](https://github.com/Mailtrain-org/mailtrain) etc) 
+[] Install WordPress    
+[] Setup custom BCB Theme    
+[] Install custom plugins    
+[] Install other miscellanious tools used (such as [Mailtrain](https://github.com/Mailtrain-org/mailtrain) etc)    
 
 ### How to run this?
 
@@ -36,4 +36,3 @@ Run Ansible
     cd ansible
     ansible-playbook -vv -i "<IP from DigitalOcean," setup_bcb.yml
 
-    
