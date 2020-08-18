@@ -8,16 +8,15 @@ Software management and configuration is done via Ansible and the code is presen
 Among other things, Ansible
 
 - installs some essentials like git, vim, cerbot etc
-- installs and configures nginx, which acts as our webserver as well as reverse proxy
-- installs MySQL server
 - installs and configures node exporter for metrics
 
 ### To do
 
-- [ ] Install WordPress    
-- [ ] Setup custom BCB Theme    
-- [ ] Install custom plugins    
-- [ ] Install other miscellanious tools used (such as [Mailtrain](https://github.com/Mailtrain-org/mailtrain) etc)    
+- Use Ansible to provision:
+    - [ ] misc stuff: vim, tmux, git
+    - [ ] docker, traefik
+    - [ ] node exporter, cadvisor
+    - [ ] pull down our git and compose configs
 
 ### How to run this?
 

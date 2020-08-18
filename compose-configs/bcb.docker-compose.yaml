@@ -1,0 +1,44 @@
+version: '3.5'
+services:
+  wordpress:
+    image: wordpress:5.4.2
+    container_name: "bcb"
+    restart: unless-stopped
+    networks:
+      - db
+      - proxy
+    ports:
+    - 8080:80
+    volumes:
+      - ./wp-content/themes:/var/www/html/wp-content/themes
+      - ./wp-content/plugins:/var/www/html/wp-content/plugins
+      - ./wp-content/uploads:/var/www/html/wp-content/uploads
+      - ./wp-config/wp-config.php:/var/www/html/wp-config.php
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bcb.rule=Host(`barcampbangalore.com`)"
+      - "traefik.http.routers.bcb.entrypoints=websecure"
+      - "traefik.http.routers.bcb.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.bcb.tls=true"
+      - "traefik.docker.network=proxy"
+
+  adminer:
+    image: adminer:4.6.3
+    networks:
+      - db
+      - proxy
+    restart: on-failure
+    ports:
+    - 8081:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer.rule=Host(`adminer.barcampbangalore.com`)"
+      - "traefik.http.routers.adminer.entrypoints=websecure"
+      - "traefik.http.routers.adminer.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.adminer.tls=true"
+      - "traefik.docker.network=proxy"
+networks:
+  db:
+    external: true
+  proxy:
+    external: true

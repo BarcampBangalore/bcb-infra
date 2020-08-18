@@ -1,0 +1,26 @@
+version: '3.5'
+services:
+  mysql:
+    image: mysql:5.7
+    networks:
+      - db
+      - proxy
+    restart: on-failure
+    ports:
+    - 3306:3306
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+    volumes:
+      - ./dbdata:/var/lib/mysql
+      - ./migration-scripts:/docker-entrypoint-initdb.d/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.db.rule=Host(`db.barcampbangalore.com`)"
+      - "traefik.http.routers.db.entrypoints=web"
+      - "traefik.docker.network=proxy"
+networks:
+  db:
+    external: true
+  proxy:
+    external: true

@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+  wordpress:
+    image: wordpress:5.4.2
+    container_name: "planning"
+    restart: unless-stopped
+    networks:
+      - db
+      - proxy
+    ports:
+    - 8082:80
+    volumes:
+      - ./wp-content/themes:/var/www/html/wp-content/themes
+      - ./wp-content/plugins:/var/www/html/wp-content/plugins
+      - ./wp-content/uploads:/var/www/html/wp-content/uploads
+      - ./wp-config/wp-config.php:/var/www/html/wp-config.php
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.planning.rule=Host(`planning.barcampbangalore.com`)"
+      - "traefik.http.routers.planning.entrypoints=websecure"
+      - "traefik.http.routers.planning.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.planning.tls=true"
+      - "traefik.docker.network=proxy"
+networks:
+  db:
+    external: true
+  proxy:
+    external: true
