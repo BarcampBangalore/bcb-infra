@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+  slackin:
+    image: emedvedev/slackin-extended
+    networks:
+      - proxy
+    restart: on-failure
+    ports:
+    - 3000:3000
+    environment:
+      - SLACK_SUBDOMAIN=barcampblr
+      - SLACK_API_TOKEN=${SLACK_API_TOKEN}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.slackin.rule=Host(`slack.barcampbangalore.com`)"
+      - "traefik.http.routers.slackin.entrypoints=websecure"
+      - "traefik.http.routers.slackin.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.slackin.tls=true"
+      - "traefik.docker.network=proxy"
+networks:
+  proxy:
+    external: true
