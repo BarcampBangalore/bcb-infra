@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  mysql:
+    image: mariadb:10.4
+    environment:
+    - MYSQL_ROOT_PASSWORD=xxxx
+    - MYSQL_DATABASE=xxxx
+    - MYSQL_USER=xxxx
+    - MYSQL_PASSWORD=xxxx
+    volumes:
+    - mysql-data:/var/lib/mysql
+    networks:
+    - proxy
+
+  redis:
+    image: redis:5
+    volumes:
+    - redis-data:/data
+    networks:
+      - proxy
+
+  mongo:
+    image: mongo:4-xenial
+    volumes:
+    - mongo-data:/data/db
+    networks:
+    - proxy
+
+  mailtrain:
+    image: mailtrain/mailtrain:latest
+    ports:
+    - "3000:3000"
+    - "3003:3003"
+    - "3004:3004"
+    volumes:
+    - mailtrain-files:/app/server/files
+    environment:
+    - URL_BASE_TRUSTED="https://mttrusted.barcampbangalore.com"
+    - URL_BASE_SANDBOX="https://sbx.barcampbangalore.com"
+    - URL_BASE_PUBLIC="https://campaigns.barcampbangalore.com"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.mailtrain-public.rule=Host(`campaigns.barcampbangalore.com`)"
+      - "traefik.http.routers.mailtrain-public.service=public"
+      - "traefik.http.routers.mailtrain-public.entrypoints=websecure"
+      - "traefik.http.routers.mailtrain-public.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.mailtrain-public.tls=true"
+      - "traefik.http.services.public.loadbalancer.server.port=3004"
+      - "traefik.http.routers.mailtrain-sbx.rule=Host(`sbx.barcampbangalore.com`)"
+      - "traefik.http.routers.mailtrain-sbx.service=sbx"
+      - "traefik.http.routers.mailtrain-sbx.entrypoints=websecure"
+      - "traefik.http.routers.mailtrain-sbx.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.mailtrain-sbx.tls=true"
+      - "traefik.http.services.sbx.loadbalancer.server.port=3003"
+      - "traefik.http.routers.mailtrain-trusted.rule=Host(`mttrusted.barcampbangalore.com`)"
+      - "traefik.http.routers.mailtrain-trusted.service=trusted"
+      - "traefik.http.routers.mailtrain-trusted.entrypoints=websecure"
+      - "traefik.http.routers.mailtrain-trusted.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.mailtrain-trusted.tls=true"
+      - "traefik.http.services.trusted.loadbalancer.server.port=3000"
+    networks:
+      - proxy
+
+volumes:
+  mysql-data:
+  redis-data:
+  mongo-data:
+  mailtrain-files:
+networks:
+  proxy:
+    external: true
+
