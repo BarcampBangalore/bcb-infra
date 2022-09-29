@@ -21,7 +21,33 @@ services:
       - "traefik.http.routers.bcb.tls.certresolver=dns-cloudflare"
       - "traefik.http.routers.bcb.tls=true"
       - "traefik.docker.network=proxy"
-
+  
+  bcbstage:
+    image: wordpress:6.0.2
+    networks:
+      - db
+      - proxy
+    restart: always
+    ports:
+    - 8088:80
+    volumes:
+      - ./staging-wp-content/themes:/var/www/html/wp-content/themes
+      - ./staging-wp-content/plugins:/var/www/html/wp-content/plugins
+      - ./staging-wp-content/uploads:/var/www/html/wp-content/uploads
+      - ./staging-wp-config/wp-config.php:/var/www/html/wp-config.php
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bcbstage.rule=Host(`staging.barcampbangalore.com`)"
+      - "traefik.http.routers.bcbstage.entrypoints=websecure"
+      - "traefik.http.routers.bcbstage.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.bcbstage.tls=true"
+      - "traefik.docker.network=proxy"
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "3"
+            max-size: "100m"
+            
   adminer:
     image: adminer:4.6.3
     networks:
