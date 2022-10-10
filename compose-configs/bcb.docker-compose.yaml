@@ -16,7 +16,7 @@ services:
       - ./wp-config/wp-config.php:/var/www/html/wp-config.php
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bcb.rule=Host(`barcampbangalore.com`)"
+      - "traefik.http.routers.bcb.rule=Host(`barcampbangalore.com`, `www.barcampbangalore.com`)"
       - "traefik.http.routers.bcb.entrypoints=websecure"
       - "traefik.http.routers.bcb.tls.certresolver=dns-cloudflare"
       - "traefik.http.routers.bcb.tls=true"
