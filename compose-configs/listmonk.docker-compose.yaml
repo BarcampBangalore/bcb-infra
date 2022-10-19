@@ -1,0 +1,54 @@
+version: '3.5'
+services:
+  listmonkdb:
+    image: postgres:13
+    restart: unless-stopped
+    ports:
+      - "9432:5432"
+    container_name: listmonk_db
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: dontusethis!nosrsly!dont#
+      POSTGRES_USER: listmonk
+      POSTGRES_DB: listmonk
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U listmonk" ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks:
+      - db
+
+  listmonk:
+    restart: unless-stopped
+    image: listmonk/listmonk:latest
+    ports:
+      - "9000:9000"
+    container_name: listmonk_app
+    depends_on:
+      - listmonkdb
+    volumes:
+      - ./config.toml:/listmonk/config.toml
+    networks:
+      - db
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.listmonk.rule=Host(`campaigns.barcampbangalore.com`)"
+      - "traefik.http.routers.listmonk.entrypoints=websecure"
+      - "traefik.http.routers.listmonk.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.listmonk.tls=true"
+      - "traefik.docker.network=proxy"
+    command: [ sh, -c, "./listmonk --config config.toml" ]
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "100m"
+
+networks:
+  db:
+    external: true
+  proxy:
+    external: true

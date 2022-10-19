@@ -1,0 +1,15 @@
+- name: "Install WordPress"
+  unarchive:
+    src: https://wordpress.org/latest.tar.gz
+    dest: "/var/www/{{ item }}"
+    remote_src: yes
+    creates: "/var/www/{{ item }}"
+    loop: ["bcb", "planning"]
+    
+- name: "Set ownership"
+  file: 
+    path: "/var/www/{{ item }}"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data

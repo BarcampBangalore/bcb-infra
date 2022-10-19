@@ -1,0 +1,21 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ansible",
+            "type": "shell",
+            "command": "cd ansible && ansible-playbook -vv -i \"159.89.163.21,\" setup_bcb.yml",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "terraform",
+            "type": "shell",
+            "command": "export DIGITALOCEAN_TOKEN=60ff9eb5f8ada3e92173cc37814999cd73730939ca3b6474d173934de7718d88 && cd terraform && terraform apply -var do_token=${DIGITALOCEAN_TOKEN}",
+        }
+    ]
+}
