@@ -22,7 +22,7 @@ services:
 
   listmonk:
     restart: unless-stopped
-    image: listmonk/listmonk:latest
+    image: listmonk/listmonk:v2.4.0
     ports:
       - "9000:9000"
     container_name: listmonk_app
